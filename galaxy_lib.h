@@ -22,7 +22,7 @@
 
 typedef struct __galaxy {
     int num_bodies;
-    star *stars;
+    star **stars;
     box b;
 } galaxy;
 

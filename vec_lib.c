@@ -44,7 +44,7 @@ vec* mul_vec(double alpha, const vec *const v2) {
 
 double norm(const vec *const v1) {
     double scalar;
-    scalar = sqrt(pow(v1->x,2) + pow(v1->y, 2));
+    scalar = sqrt(pow(v1->x, 2) + pow(v1->y, 2));
 
     return scalar;
 }
@@ -94,7 +94,7 @@ void test_vec_lib() {
         printf(" vector multiplication \t\t%s-- ok --%s \n", KGRN, KNRM);
     }
     if( v1_norm == sqrt(50.0) ) {
-        printf(" vector norm \t\t%s-- ok --%s \n", KGRN, KNRM);
+        printf(" vector norm \t\t\t%s-- ok --%s \n", KGRN, KNRM);
     }
     if( d == sqrt(8.0) ) {
         printf(" intra-vector distance \t\t%s-- ok --%s \n", KGRN, KNRM);

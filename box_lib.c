@@ -96,7 +96,7 @@ void test_box_lib() {
     double l = compute_length(four_boxes[2]);
 
     if( true == 1 && false == 0 ) {
-        printf(" is_inside() \t\t%s-- ok --%s \n", KGRN, KNRM);
+        printf(" is_inside() \t\t\t%s-- ok --%s \n", KGRN, KNRM);
     }
     if( four_boxes[1].x0 == 2.0 && four_boxes[1].x1 == 4.0
         && four_boxes[1]. y0 == 0.0 && four_boxes[1].y1 == 4.0) {
