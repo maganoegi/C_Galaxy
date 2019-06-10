@@ -16,8 +16,8 @@
 #include "vec_lib.h"
 
 
-#define G 0.0000000000667 //6.67 * pow(10.0, -11.0);
-#define Epsilon 30000.0 //3.0 * pow(10.0, 4.0);
+#define G 0.0000000000667
+#define Epsilon 30000.0
 
 typedef struct __star {
     vec pos_t, pos_t_dt, acc;
