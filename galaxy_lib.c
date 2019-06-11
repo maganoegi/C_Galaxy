@@ -21,7 +21,7 @@
 // Initialize seed for random random generation
 srand(time(0));
 
-// Function that allows for random double generation in diff ranges:
+// Function that allows for random double generation in different minmax ranges:
 double randFrom(double min, double max) {
     double range = (max - min);
     double div = RAND_MAX / range;
@@ -47,31 +47,19 @@ galaxy *create_and_init_galaxy(int num_bodies, box b, double dt) {
         vec* r_i_prototype = new_vec(0.5 - randFrom(0.0, 1.0), 0.5 - randFrom(0.0, 1.0));
         double alpha = R * (log10(1.0 - randFrom(0.0, 1.0))) / 1.8;
         vec* r_i = mul_vec(alpha, r_i_prototype);
-
-        // Only proceed if the initial position vector is inside the given box.
-        if(is_inside(b, *r_i)) {
-            // Find mass
-            double m_i = m_min + (randFrom(0.0, 10.0) * m_solar);
-
-            // Calculate initial speed
-            double phi = atan2(r_i->y, r_i->x);
-            vec* v_i_prototype = new_vec(-sin(phi), cos(phi));
-            vec* v_i = mul_vec(sqrt((G * (m_i + stars[0]->mass)) / norm(r_i)), v_i_prototype);
-
-            // Calculate Initial Acceleration
-            update_acceleration()
-
-            // Add the star to the list
-            stars[i] = new_star_vel(*r_i, *v_i, .a., m_i, dt);
-
-            // Resource liberation
-            free(v_i_prototype);
-        } else {
-            stars[i] = NULL;
-        }
-
-        // Resource liberation
         free(r_i_prototype);
+
+        // Find mass
+        double m_i = m_min + (randFrom(0.0, 10.0) * m_solar);
+
+        // Calculate initial speed
+        double phi = atan2(r_i->y, r_i->x);
+        vec* v_i_prototype = new_vec(-sin(phi), cos(phi));
+        vec* v_i = mul_vec(sqrt((G * (m_i + stars[0]->mass)) / norm(r_i)), v_i_prototype);
+        free(v_i_prototype);
+
+        // Add the star to the list
+        stars[i] = new_star_vel(*r_i, *v_i, *zero_vec, m_i, dt);
     }
 
     galaxy* g = malloc(sizeof(galaxy));
@@ -90,16 +78,28 @@ galaxy *create_and_init_galaxy(int num_bodies, box b, double dt) {
 // v_i = sqrt( (G(m_i + m_0)) / ||r_i|| ) * (-sin(phi), cos(phi))
 // phi = atan2(r_iy / r_ix)
 
-void reset_accelerations(galaxy *g) {
-
+void reset_accelerations(galaxy* g) {
+    vec* zero_vec = new_vec(0.0, 0.0);
+    for(int i = 0; i < g->num_bodies; i++) {
+        if(g->stars[i] != NULL) {
+            g->stars[i]->acc = *zero_vec;
+        }
+    }
+    free(zero_vec);
 }
 
 void update_positions(galaxy *g, double dt) {
-
+    for(int i = 0; i < g->num_bodies; i++) {
+        update_position(g->stars[i], dt);
+    }
 }
 
 void free_galaxy(galaxy *g) {
-
+    for(int i = 0; i < g->num_bodies; i++) {
+        free(g->stars[i]);
+    }
+    free(g->stars);
+    free(g);
 }
 
 void resize_galaxy(galaxy *g) {
