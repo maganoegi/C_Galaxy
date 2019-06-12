@@ -1,2 +1,5 @@
-# C_Galaxy
-Galaxy simulation in C using quad trees (HEPIA)
+/*======================================
+ * Galaxy Simulation using Quad-Trees
+ * HEPIA 2018-2019 ITI 1
+ * Sergey PLATONOV
+======================================*/
