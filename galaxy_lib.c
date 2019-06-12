@@ -18,11 +18,11 @@
 #include <time.h>
 
 
-// Initialize seed for random random generation
-//srand(time(0));
 
 // Function that allows for random double generation in different minmax ranges:
 double randFrom(double min, double max) {
+
+
     double range = (max - min);
     double div = RAND_MAX / range;
     return min + (rand() / div);
@@ -123,5 +123,18 @@ void resize_galaxy(galaxy *g) {
 }
 
 void test_galaxy_lib() {
+    // Initialize seed for random random generation (seeder needs to be just outside the function)
+    srand(time(NULL));
 
+    galaxy* g = create_and_init_galaxy(5, new_box(-1.0, 2.0, -2.0, 1.0), 1.0);
+
+//    for(int i = 0; i < g->num_bodies; i++) {
+//        update_positions(g, 2.0 * time_unit);
+//        print_star(g->stars[i]);
+//    }
+    for(int i = 1; i < 10; i++) {
+        update_acceleration(g->stars[1], g->stars[0]);
+        update_positions(g, (double)i * time_unit);
+        print_star(g->stars[1]);
+    }
 }

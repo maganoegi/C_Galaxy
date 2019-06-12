@@ -22,4 +22,5 @@ int main(int argc, char **argv) {
     test_vec_lib();
     test_box_lib();
     test_star_lib();
+    test_galaxy_lib();
 }
