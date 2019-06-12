@@ -109,7 +109,7 @@ void resize_galaxy(galaxy *g) {
         // If a star pos vector is outside of the box-allowed boundaries, it needs to be:
         // destroyed, freed, moved.
 
-        // Check whether a vector is out of the boundaries -> put the pointer the NULL.
+        // Check whether a vector is out of the boundaries -> put the pointer the NULL
         int q_2_rem = 0;
         for(int i = 0; i < g->num_bodies; i++) {
             if(!is_inside(g->b, g->stars[i]->pos_t)) {
