@@ -14,7 +14,7 @@
 
 #include "vec_lib.h"
 #include "star_lib.h"
-//#include "quadtree_lib.h"
+#include "quadtree_lib.h"
 #include "galaxy_lib.h"
 #include "box_lib.h"
 
