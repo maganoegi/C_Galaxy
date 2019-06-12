@@ -45,7 +45,7 @@ void update_position(star *s, double dt) {
     s->pos_t_dt = tmp;
 
     //En pseudo-code cette mise à jour est de la forme:
-    //pos_t = 2*pos_t - pos_t_dt + acc * dt * dt
+    //pos_t = 2*pos_t - pos_t_dt + acc * dt * dt...
 }
 
 void print_star(const star *const s) {
