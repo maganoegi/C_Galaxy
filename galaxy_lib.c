@@ -19,7 +19,7 @@
 
 
 // Initialize seed for random random generation
-srand(time(0));
+//srand(time(0));
 
 // Function that allows for random double generation in different minmax ranges:
 double randFrom(double min, double max) {
@@ -60,6 +60,9 @@ galaxy *create_and_init_galaxy(int num_bodies, box b, double dt) {
 
         // Add the star to the list
         stars[i] = new_star_vel(*r_i, *v_i, *zero_vec, m_i, dt);
+
+        // Calculate acceleration
+        update_acceleration(stars[i], stars[0]);
     }
 
     galaxy* g = malloc(sizeof(galaxy));
@@ -103,7 +106,20 @@ void free_galaxy(galaxy *g) {
 }
 
 void resize_galaxy(galaxy *g) {
+        // If a star pos vector is outside of the box-allowed boundaries, it needs to be:
+        // destroyed, freed, moved.
 
+        // Check whether a vector is out of the boundaries -> put the pointer the NULL
+        int q_2_rem = 0;
+        for(int i = 0; i < g->num_bodies; i++) {
+            if(!is_inside(g->b, g->stars[i]->pos_t)) {
+                q_2_rem++;
+                free(g->stars[i]);
+                g->stars[i] = NULL;
+//                printf("\n%p\n", g->stars[i]);
+            }
+        }
+        g->num_bodies = g->num_bodies - q_2_rem;
 }
 
 void test_galaxy_lib() {
