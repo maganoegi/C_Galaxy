@@ -29,6 +29,7 @@ double randFrom(double min, double max) {
 }
 
 galaxy *create_and_init_galaxy(int num_bodies, box b, double dt) {
+
     // Allocation memory for all stars in galaxy (0th is super star):
     star** stars = malloc(num_bodies * sizeof(star*));
 
@@ -124,7 +125,6 @@ void resize_galaxy(galaxy *g) {
 
 void test_galaxy_lib() {
     // Initialize seed for random random generation (seeder needs to be just outside the function)
-    srand(time(NULL));
 
     galaxy* g = create_and_init_galaxy(5, new_box(-1.0, 2.0, -2.0, 1.0), 1.0);
 

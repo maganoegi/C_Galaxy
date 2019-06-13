@@ -17,8 +17,10 @@
 #include "quadtree_lib.h"
 #include "galaxy_lib.h"
 #include "box_lib.h"
+#include <time.h>
 
 int main(int argc, char **argv) {
+    srand(time(NULL));
     test_vec_lib();
     test_box_lib();
     test_star_lib();

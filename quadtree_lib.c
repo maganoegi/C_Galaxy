@@ -66,7 +66,25 @@ void insert_star(node* n, star* s) {
 }
 
 quad_tree *create_quad_tree_from_galaxy(const galaxy *const g) {
+    // Initialization quad-tree
+    box boundaries = g->b;
+    node* top = malloc(sizeof(node));
+    top->s = NULL;
+    top->super_s = g->stars[0];
+    top->is_empty = 1;
+    top->b = boundaries;
+    for(int j = 0; j < 4; j++) {
+        top->children[j] = NULL;
+    }
+    quad_tree* qt = malloc(sizeof(quad_tree));
+    qt->root = top;
 
+    // Populate the tree
+    for(int i = 1; i < g->num_bodies; i++) {
+        insert_star(qt->root, g->stars[i]);
+    }
+
+    return qt;
 }
 
 void free_quad_tree(quad_tree *t) {
@@ -82,6 +100,7 @@ void update_accelerations_of_all_stars(const node *const n, galaxy *g, double th
 }
 
 void test_quad_tree_lib() {
+
     box boundaries = new_box(-15.0, 15.0, -15.0, 15.0);
     star** my_stars = malloc(30 * sizeof(star*));
     for(int i = 0; i < 30; i++) {
@@ -98,11 +117,11 @@ void test_quad_tree_lib() {
     top->s = NULL;
     top->super_s = my_stars[0];
     top->is_empty = 1;
+    top->b = boundaries;
     for(int j = 0; j < 4; j++) {
         top->children[j] = NULL;
     }
 
-    top->b = boundaries;
 
     // Stars to be inserted
     for(int i = 0; i < 30; i++) {
@@ -110,5 +129,9 @@ void test_quad_tree_lib() {
         insert_star(top, my_stars[i]);
 //        print_star(my_stars[i]);
     }
+
+    galaxy* g = create_and_init_galaxy(10, new_box(-100000000000000000000000.0, 100000000000000000000000.0, -100000000000000000000000.0, 100000000000000000000000.0), 1.0 * time_unit);
+    quad_tree* qt = create_quad_tree_from_galaxy(g);
+    printf("\nEND\n");
 }
 
