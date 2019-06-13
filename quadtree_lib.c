@@ -31,6 +31,7 @@ void insert_star(node* n, star* s) {
                 box* kids = divide_in_four(n->b);
                 node* next_four = malloc(4 * sizeof(node));
                 for(int i = 0; i < 4; i++) {
+                    n->children[i] = &next_four[i];
                     next_four[i].b = kids[i];
                     next_four[i].is_empty = 1;
                     next_four[i].s = malloc(sizeof(star));
@@ -81,7 +82,7 @@ void update_accelerations_of_all_stars(const node *const n, galaxy *g, double th
 }
 
 void test_quad_tree_lib() {
-    box boundaries = new_box(-4.0, 4.0, -4.0, 4.0);
+    box boundaries = new_box(-15.0, 15.0, -15.0, 15.0);
     star** my_stars = malloc(30 * sizeof(star*));
     for(int i = 0; i < 30; i++) {
         my_stars[i] = malloc(sizeof(star));
