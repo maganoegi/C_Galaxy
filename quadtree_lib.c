@@ -92,11 +92,32 @@ void free_quad_tree(quad_tree *t) {
 }
 
 void update_acceleration_from_node(const node *const n, star *s, double theta) {
+    //1. Si le nœud est une feuille non-vide et que l’étoile n’est pas dans le sousdomaine du nœud, on met à jour l’accélération entre l’étoile et l’étoile
+    //contenue dans le nœud.
+    if((n->children[0] == NULL) && (n->children[1] == NULL) && (n->children[2] == NULL) && (n->children[3] == NULL)
+    && (!n->is_empty) && is_inside(n->b, s->pos_t)) {
+        update_acceleration(s, n->s);
+    } else if(compute_length(n->b) / (norm(sub_vec(&n->super_s->pos_t, &s->pos_t))) < theta) {
+        update_acceleration(s, n->super_s);
+    } else {
+        for(int i = 0; i < 4; i++) {
+            update_acceleration_from_node(n->children[i], s, theta);
+        }
 
 }
 
-void update_accelerations_of_all_stars(const node *const n, galaxy *g, double theta) {
+    //2. Sinon, si n est assez éloigné de s (si la taille du sous-domaine de n divisée
+    //par la distance entre la position de la super étoile de n et s est plus petite
+    //que theta) on met à jour l’accélération de s à l’aide de la super étoile de
+    //n.
+    //3. Sinon, pour tous les enfants de n, on rappelle
+    //update_acceleration_from_node(n, s, theta);
+}
 
+void update_accelerations_of_all_stars(const node *const n, galaxy *g, double theta) {
+    for(int i = 1; i < g->num_bodies; i++) {
+        update_acceleration_from_node(n, g->stars[i], theta);
+    }
 }
 
 void test_quad_tree_lib() {
@@ -132,6 +153,7 @@ void test_quad_tree_lib() {
 
     galaxy* g = create_and_init_galaxy(10, new_box(-100000000000000000000000.0, 100000000000000000000000.0, -100000000000000000000000.0, 100000000000000000000000.0), 1.0 * time_unit);
     quad_tree* qt = create_quad_tree_from_galaxy(g);
+    update_accelerations_of_all_stars(qt->root, g, 0.1);
     printf("\nEND\n");
 }
 
