@@ -48,6 +48,10 @@ galaxy *create_and_init_galaxy(int num_bodies, box b, double dt) {
         vec* r_i_prototype = new_vec(0.5 - randFrom(0.0, 1.0), 0.5 - randFrom(0.0, 1.0));
         double alpha = R * (log10(1.0 - randFrom(0.0, 1.0))) / 1.8;
         vec* r_i = mul_vec(alpha, r_i_prototype);
+        //print_vec(r_i_prototype);
+        //printf("alpha = %g\n", alpha);
+        //print_vec(r_i);
+
         free(r_i_prototype);
 
         // Find mass
@@ -57,6 +61,7 @@ galaxy *create_and_init_galaxy(int num_bodies, box b, double dt) {
         double phi = atan2(r_i->y, r_i->x);
         vec* v_i_prototype = new_vec(-sin(phi), cos(phi));
         vec* v_i = mul_vec(sqrt((G * (m_i + stars[0]->mass)) / norm(r_i)), v_i_prototype);
+
         free(v_i_prototype);
 
         // Add the star to the list
@@ -100,7 +105,11 @@ void update_positions(galaxy *g, double dt) {
 
 void free_galaxy(galaxy *g) { // NEED TO FREE THE VECTORS!!!
     for(int i = 0; i < g->num_bodies; i++) {
+        //vec_free(&g->stars[i]->pos_t);
+        //vec_free(&g->stars[i]->pos_t_dt);
+        //vec_free(&g->stars[i]->acc);
         free(g->stars[i]);
+
     }
     free(g->stars);
     free(g);
@@ -112,15 +121,29 @@ void resize_galaxy(galaxy *g) {
 
         // Check whether a vector is out of the boundaries -> put the pointer the NULL
         int q_2_rem = 0;
+        star** tmp = malloc(g->num_bodies * sizeof(star*));
         for(int i = 0; i < g->num_bodies; i++) {
             if(!is_inside(g->b, g->stars[i]->pos_t)) {
                 q_2_rem++;
-                free(g->stars[i]);
-                g->stars[i] = NULL;
-//                printf("\n%p\n", g->stars[i]);
+            } else {
+                tmp[i] = g->stars[i];
+                //print_star(g->stars[i]);
             }
+            //print_star(g->stars[i]);
         }
+        printf("\nBEFORE %d -------------------\n", g->num_bodies);
         g->num_bodies = g->num_bodies - q_2_rem;
+        g->stars = realloc(g->stars, g->num_bodies * sizeof(star*));
+        printf("\nAFTER %d ---------------------\n", g->num_bodies);
+
+        for(int i = 0; i < g->num_bodies; i++) {
+            if(is_inside(g->b, g->stars[i]->pos_t)) {
+                g->stars[i] = tmp[i];
+                //print_star(g->stars[i]); 
+            }     
+        }
+
+        //free(tmp);
 }
 
 void test_galaxy_lib() {

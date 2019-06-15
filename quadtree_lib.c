@@ -20,43 +20,46 @@
 
 
 void insert_star(node* n, star* s) {
-    if(is_inside(n->b, s->pos_t)) {
-        if((n->children[0] == NULL) && (n->children[1] == NULL) && (n->children[2] == NULL) && (n->children[3] == NULL)) {
+    if(n && is_inside(n->b, s->pos_t)) {
+        if(!n->children[0] && !n->children[1] && !n->children[2] && !n->children[3]) {
             if(n->is_empty) {
                 n->is_empty = 0;
                 n->s = s;
             } else {
                 box* kids = divide_in_four(n->b);
-                node* next_four = malloc(4 * sizeof(node));
-                if(!next_four) {
-                    fprintf(stderr, "\nmalloc failed\n");
-                    exit(1);
-                }
+                
                 for(int i = 0; i < 4; i++) {
-                    n->children[i] = &next_four[i];
-                    next_four[i].b = kids[i];
-                    next_four[i].is_empty = 1;
-                    next_four[i].s = malloc(sizeof(star)); // MAYBE MOVE THIS UP?? ZOZ
-                    next_four[i].super_s = malloc(sizeof(star));
+                    n->children[i] = malloc(sizeof(node));
+                    if(!n->children[i]) {
+                        fprintf(stderr, "\nmalloc failed\n");
+                        EXIT_FAILURE;
+                    }
+                    n->children[i]->b = kids[i];
+                    n->children[i]->is_empty = 1;
+                    n->children[i]->s = malloc(sizeof(star));
+                    n->children[i]->super_s = malloc(sizeof(star));
 
                     for(int j = 0; j < 4; j++) {
-                        next_four[i].children[j] = NULL;
+                        n->children[i]->children[j] = NULL;
                     }
-                    insert_star(&next_four[i], n->s);
+
+                    insert_star(n->children[i], n->s);
                 }
+
                 for(int i = 0; i < 4; i++) {
-                    insert_star(&next_four[i], s);
+                    insert_star(n->children[i], s);
                 }
                 n->s = NULL;
                 n->is_empty = 1;
             }
         } else {
             // Increment super star mass
+            //printf("\nBEFORE supermass = %g, mass = %g\n", n->super_s->mass, s->mass);
             n->super_s->mass += s->mass;
 
             // Increment Center of mass coordinates
             n->super_s->pos_t_dt = n->super_s->pos_t;
-            add_vec(&n->super_s->pos_t, &s->pos_t);
+            n->super_s->pos_t = *add_vec(&n->super_s->pos_t, &s->pos_t);
 
             for(int i = 0; i < 4; i++) {
                 insert_star(n->children[i], s);
@@ -80,7 +83,7 @@ quad_tree *create_quad_tree_from_galaxy(const galaxy *const g) {
     qt->root = top;
 
     // Populate the tree
-    for(int i = 1; i < g->num_bodies; i++) {
+    for(int i = 0; i < g->num_bodies; i++) { 
         insert_star(qt->root, g->stars[i]);
     }
 
@@ -93,12 +96,7 @@ void free_node(node* n) {
     for(int i = 0; i < 4; ++i) {
         free_node(n->children[i]);
     }
-    free(n->children);
-    free(n->s);
-    free(n->super_s);
-    printf("\nattempt to free\n");
     free(n);
-    printf("\nfreed\n");
 }
 
 void free_quad_tree(quad_tree* qt) {
@@ -109,16 +107,15 @@ void free_quad_tree(quad_tree* qt) {
 void update_acceleration_from_node(const node *const n, star *s, double theta) {
     //1. Si le nœud est une feuille non-vide et que l’étoile n’est pas dans le sousdomaine du nœud, on met à jour l’accélération entre l’étoile et l’étoile
     //contenue dans le nœud.
-    if((n->children[0] == NULL) && (n->children[1] == NULL) && (n->children[2] == NULL) && (n->children[3] == NULL)
-    && (!n->is_empty) && is_inside(n->b, s->pos_t)) {
+    if((!n->children[0]) && (!n->children[1]) && (!n->children[2]) && (!n->children[3])
+    && (!n->is_empty) && !is_inside(n->b, s->pos_t)) {
         update_acceleration(s, n->s);
-    } else if (compute_length(n->b) / (norm(sub_vec(&n->super_s->pos_t, &s->pos_t))) < theta) {
+    } else if (compute_length(n->b) / (norm(sub_vec(&(n->super_s->pos_t), &(s->pos_t)))) < theta) {
         update_acceleration(s, n->super_s);
     } else {
         for (int i = 0; i < 4; i++) {
-            if (n->children[i]) {
+            if (n->children[i] != NULL) {
                 update_acceleration_from_node(n->children[i], s, theta);
-
             }
         }
     }
@@ -133,7 +130,7 @@ void update_acceleration_from_node(const node *const n, star *s, double theta) {
 }
 
 void update_accelerations_of_all_stars(const node *const n, galaxy *g, double theta) {
-    for(int i = 1; i < g->num_bodies; i++) {
+    for(int i = 0; i < g->num_bodies; i++) {
         update_acceleration_from_node(n, g->stars[i], theta);
     }
 }

@@ -3,8 +3,8 @@
 all: galaxy_simulation
 .PHONY : all
 
-galaxy_simulation : main.o vec_lib.o box_lib.o star_lib.o galaxy_lib.o quadtree_lib.o
-	gcc -o galaxy_simulation main.o vec_lib.o box_lib.o star_lib.o galaxy_lib.o quadtree_lib.o -W -Wall -Wextra -fsanitize=address -fsanitize=leak -fsanitize=undefined -std=c11 -lm
+galaxy_simulation : main.o vec_lib.o box_lib.o star_lib.o galaxy_lib.o quadtree_lib.o gfx.o
+	gcc -o galaxy_simulation main.o vec_lib.o box_lib.o star_lib.o galaxy_lib.o quadtree_lib.o gfx.o -W -Wall -Wextra -fsanitize=address -fsanitize=leak -fsanitize=undefined -std=c11 -lm -lSDL2
 
 main.o : main.c
 	gcc -o main.o -c main.c -W -Wall -Wextra -fsanitize=address -fsanitize=leak -fsanitize=undefined -std=c11 -lm
