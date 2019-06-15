@@ -28,12 +28,17 @@ void insert_star(node* n, star* s) {
             } else {
                 box* kids = divide_in_four(n->b);
                 node* next_four = malloc(4 * sizeof(node));
+                if(!next_four) {
+                    fprintf(stderr, "\nmalloc failed\n");
+                    exit(1);
+                }
                 for(int i = 0; i < 4; i++) {
                     n->children[i] = &next_four[i];
                     next_four[i].b = kids[i];
                     next_four[i].is_empty = 1;
-                    next_four[i].s = malloc(sizeof(star));
+                    next_four[i].s = malloc(sizeof(star)); // MAYBE MOVE THIS UP?? ZOZ
                     next_four[i].super_s = malloc(sizeof(star));
+
                     for(int j = 0; j < 4; j++) {
                         next_four[i].children[j] = NULL;
                     }
@@ -82,20 +87,22 @@ quad_tree *create_quad_tree_from_galaxy(const galaxy *const g) {
     return qt;
 }
 
-//void free_node(node* n) {
-//    if(!n) return;
-//
-//    for(int i = 0; i < 4; ++i) {
-//        free_node(n->children[i]);
-//    }
-//    printf("\nattempt to free\n");
-//    free(n);
-//    printf("\nfreed\n");
-//}
+void free_node(node* n) {
+    if(!n) return;
+
+    for(int i = 0; i < 4; ++i) {
+        free_node(n->children[i]);
+    }
+    free(n->children);
+    free(n->s);
+    free(n->super_s);
+    printf("\nattempt to free\n");
+    free(n);
+    printf("\nfreed\n");
+}
 
 void free_quad_tree(quad_tree* qt) {
-//    free_node(qt->root);
-    free(qt->root);
+    free_node(qt->root);
     free(qt);
 }
 

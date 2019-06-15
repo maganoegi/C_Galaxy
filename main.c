@@ -12,7 +12,8 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-//#include <SDL2/SDL.h>
+#include "gfx.h"
+#include <SDL2/SDL.h>
 
 #include "vec_lib.h"
 #include "star_lib.h"
