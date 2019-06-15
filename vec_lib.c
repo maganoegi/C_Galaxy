@@ -60,12 +60,11 @@ void print_vec(const vec *const v) {
     // Apply Colors
     // Check for pretty formatting possibilities
     // Check if %g best display formatter for "double type"
-    printf("(%g,%g)", v->x, v->y);
+    printf("(%g,%g)\n", v->x, v->y);
 }
 
-void vec_free(vec** v) {
-    free(*v);
-    *v = NULL;
+void vec_free(vec* v) {
+    free(v);
 }
 
 void test_vec_lib() {

@@ -23,11 +23,9 @@ void insert_star(node* n, star* s) {
     if(is_inside(n->b, s->pos_t)) {
         if((n->children[0] == NULL) && (n->children[1] == NULL) && (n->children[2] == NULL) && (n->children[3] == NULL)) {
             if(n->is_empty) {
-                printf("EMPTY LEAF\n\t");
                 n->is_empty = 0;
                 n->s = s;
             } else {
-                printf("DIVISION\n\t");
                 box* kids = divide_in_four(n->b);
                 node* next_four = malloc(4 * sizeof(node));
                 for(int i = 0; i < 4; i++) {
@@ -48,7 +46,6 @@ void insert_star(node* n, star* s) {
                 n->is_empty = 1;
             }
         } else {
-            printf("NODE\n\t");
             // Increment super star mass
             n->super_s->mass += s->mass;
 
@@ -60,8 +57,6 @@ void insert_star(node* n, star* s) {
                 insert_star(n->children[i], s);
             }
         }
-    } else {
-        printf("NOT INSIDE\n");
     }
 }
 
@@ -87,8 +82,21 @@ quad_tree *create_quad_tree_from_galaxy(const galaxy *const g) {
     return qt;
 }
 
-void free_quad_tree(quad_tree *t) {
+//void free_node(node* n) {
+//    if(!n) return;
+//
+//    for(int i = 0; i < 4; ++i) {
+//        free_node(n->children[i]);
+//    }
+//    printf("\nattempt to free\n");
+//    free(n);
+//    printf("\nfreed\n");
+//}
 
+void free_quad_tree(quad_tree* qt) {
+//    free_node(qt->root);
+    free(qt->root);
+    free(qt);
 }
 
 void update_acceleration_from_node(const node *const n, star *s, double theta) {
@@ -97,14 +105,17 @@ void update_acceleration_from_node(const node *const n, star *s, double theta) {
     if((n->children[0] == NULL) && (n->children[1] == NULL) && (n->children[2] == NULL) && (n->children[3] == NULL)
     && (!n->is_empty) && is_inside(n->b, s->pos_t)) {
         update_acceleration(s, n->s);
-    } else if(compute_length(n->b) / (norm(sub_vec(&n->super_s->pos_t, &s->pos_t))) < theta) {
+    } else if (compute_length(n->b) / (norm(sub_vec(&n->super_s->pos_t, &s->pos_t))) < theta) {
         update_acceleration(s, n->super_s);
     } else {
-        for(int i = 0; i < 4; i++) {
-            update_acceleration_from_node(n->children[i], s, theta);
-        }
+        for (int i = 0; i < 4; i++) {
+            if (n->children[i]) {
+                update_acceleration_from_node(n->children[i], s, theta);
 
-}
+            }
+        }
+    }
+
 
     //2. Sinon, si n est assez éloigné de s (si la taille du sous-domaine de n divisée
     //par la distance entre la position de la super étoile de n et s est plus petite

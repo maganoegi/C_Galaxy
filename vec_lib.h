@@ -34,7 +34,7 @@ vec* mul_vec(double alpha, const vec *const v2);
 double norm(const vec *const v1);
 double distance(const vec *const v1, const vec *const v2);
 void print_vec(const vec *const v);
-void vec_free(vec** v);
+void vec_free(vec* v);
 
 void test_vec_lib();
 

@@ -32,7 +32,7 @@ typedef struct __quad_tree {
 
 
 quad_tree *create_quad_tree_from_galaxy(const galaxy *const g);
-void free_quad_tree(quad_tree *t);
+void free_quad_tree(quad_tree* qt);
 void test_quad_tree_lib();
 void update_acceleration_from_node(const node *const n, star *s,
                                    double theta);

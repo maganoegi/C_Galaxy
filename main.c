@@ -22,9 +22,9 @@
 
 int input_error_handler(int argc, char **argv) {
     if(argc != 3) {
-        fprintf(stderr, "%s========== Invalid Parameters Error ===========\n%s"
-                        "%s  Please provide exactly 2 arguments (int, double)%s\n"
-                        "%s  └> Number of stars, and Theta %s\n"
+        fprintf(stderr, "%s\n========== Invalid Parameters Error ===========\n%s"
+                        "%s  Please provide exactly 2 arguments%s\n"
+                        "%s  └> (int)Number of stars, and (double)Theta %s\n"
                         "%s===============================================%s\n\n", KRED, KNRM, KMAG, KNRM,
                 KCYN, KNRM, KRED, KNRM);
         return EXIT_FAILURE;
@@ -38,25 +38,30 @@ void galaxy_display(galaxy* g) {
 
 int main(int argc, char **argv) {
     input_error_handler(argc, argv);
-    /*======================================
+    /*=========================================================================
         * Initialization
-    ======================================*/
+    =========================================================================*/
     int num_stars = atoi(argv[1]);
     double theta = atof(argv[2]);
-    int iter = 1000; // number of temporal iterations
     srand(time(NULL)); // seed for rng
+
+    int iter = 100000; // number of temporal iterations
+    double scale = pow(10.0, 20.0);
     box domain = new_box(
-            -100000000000000000000000.0, // x0
-            100000000000000000000000.0,  // x1
-            -100000000000000000000000.0, // y0
-            100000000000000000000000.0   // y1
+            -1.0 * scale, // x0
+            1.0 * scale,  // x1
+            -1.0 * scale, // y0
+            1.0 * scale   // y1
             );
 
-    /*======================================
+    /*=========================================================================
         * Galaxy Simulation
-    ======================================*/
+    =========================================================================*/
     galaxy* g = create_and_init_galaxy(num_stars, domain, 0.0);
     for(int i = 0; i < iter; i++) {
+//        printf("%d / %d\n", i + 1, iter);
+        print_vec(&g->stars[1]->pos_t);
+//        printf("\nX = %g     Y = %g                 X = %g     Y = %g\n", g->stars[1]->pos_t.x * pow(10,-17.0), g->stars[1]->pos_t.y * pow(10,-17.0), g->stars[7]->pos_t.x * pow(10,-17.0), g->stars[7]->pos_t.y * pow(10,-17.0));
         double dt = (double)i * time_unit;
 
         resize_galaxy(g);
@@ -69,13 +74,14 @@ int main(int argc, char **argv) {
     }
 
     free_galaxy(g);
+    printf("\n--- END ---\n");
 
-    /*======================================
+    /*=========================================================================
         * Uncomment for library tests
+    =========================================================================*/
         // test_vec_lib();
         // test_box_lib();
         // test_star_lib();
         // test_galaxy_lib();
         // test_quad_tree_lib();
-    ======================================*/
 }

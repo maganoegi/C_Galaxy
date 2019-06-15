@@ -98,7 +98,7 @@ void update_positions(galaxy *g, double dt) {
     }
 }
 
-void free_galaxy(galaxy *g) {
+void free_galaxy(galaxy *g) { // NEED TO FREE THE VECTORS!!!
     for(int i = 0; i < g->num_bodies; i++) {
         free(g->stars[i]);
     }
