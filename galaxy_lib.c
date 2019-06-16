@@ -93,21 +93,24 @@ void update_positions(galaxy *g, double dt) {
 
 void free_galaxy(galaxy *g) { // NEED TO FREE THE VECTORS!!!
     for(int i = 0; i < g->num_bodies; i++) {
-        //vec_free(&g->stars[i]->pos_t);
-        //vec_free(&g->stars[i]->pos_t_dt);
-        //vec_free(&g->stars[i]->acc);
+        vec_free(&g->stars[i]->pos_t);
+        vec_free(&g->stars[i]->pos_t_dt);
+        vec_free(&g->stars[i]->acc);
         free(g->stars[i]);
-
     }
     free(g->stars);
     free(g);
 }
 
 void resize_galaxy(galaxy *g) {
-        // If a star pos vector is outside of the box-allowed boundaries, it needs to be:
-        // destroyed, freed, moved.
-
-        // Check whether a vector is out of the boundaries -> put the pointer the NULL
+        /*===========================================================================================
+            * If a star position vector is outside of the box-allowed boundaries, it needs to be:
+                * tested
+                * valid values copied to tmp, invalid copies counted
+                * reallocated with the new "valid" dimension
+                * values moved back
+                * tmp destroyed
+        ===========================================================================================*/
         int q_2_rem = 0;
         star** tmp = malloc(g->num_bodies * sizeof(star*));
         for(int i = 0; i < g->num_bodies; i++) {
@@ -132,7 +135,7 @@ void resize_galaxy(galaxy *g) {
             }     
         }
 
-        //free(tmp);
+        free(tmp);
 }
 
 void test_galaxy_lib() {

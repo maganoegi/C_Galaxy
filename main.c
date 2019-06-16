@@ -41,40 +41,32 @@ void show_pixels(galaxy* g, struct gfx_context_t* context, double scale, int scr
     gfx_clear(context, COLOR_BLACK);
 
     for(int i = 0; i < g->num_bodies; i++) {
+        /*=========================================================================
+            * Color generation proportional to mass (BLUE -> RED)
+        =========================================================================*/
         double mass_ratio = g->stars[i]->mass / MAXMASS;
         mass_ratio = mass_ratio * pow(10.0, -21.0);
         int red = (int)(255.0 * mass_ratio);
         int green = 0;
         int blue = (int)(255.0 * (1.0 - mass_ratio));
-
         uint32_t color = MAKE_COLOR(red, green, blue);
-        //uint32_t color = MAKE_COLOR(255, 255, 255);
 
-
+        /*=========================================================================
+            * Dimension scaling
+        =========================================================================*/
         double size_scale = (2.0 * scale) / (double)screen_dimension;
         double pos_x_rel = g->stars[i]->pos_t.x + scale;
         double pos_y_rel = g->stars[i]->pos_t.y + scale;
 
+        int px = (int)(pos_x_rel / size_scale);
+        int py = (int)(pos_y_rel / size_scale);
 
-        int px;
-        int py;
-
-        px = (int)(pos_x_rel / size_scale);
-        py = (int)(pos_y_rel / size_scale);
-
-        if((px < 0) || (py < 0)) {
+        if((px < 0) || (py < 0)) { // Protection against px,py overflow when double -> int
             px = 0;
             py = 0;
         }
-
-        //printf("\npx = %d,    py = %d \n", px , py);
-        //print_box(g->b);
-
-
         gfx_putpixel(context, px, py, color);
-
     }
-
     gfx_present(context);
     sleep(0.00001);
 }
@@ -90,7 +82,7 @@ int main(int argc, char **argv) {
     srand(time(NULL)); // seed for rng
 
     int iter = 1000000; // number of temporal iterations
-    double scale = 1000000000000000005.0; // 17
+    double scale = 10000005.0; // Empirically chosen scale
     box domain = new_box(
             -1.0 * scale, // x0
             1.0 * scale,  // x1
@@ -119,7 +111,7 @@ int main(int argc, char **argv) {
         double dt = (double)i * time_unit;
         key_pressed = gfx_keypressed();
         if(key_pressed == SDLK_ESCAPE) {
-            return;
+            break;
         }
         resize_galaxy(g);
         show_pixels(g, context, scale, screen_dimension);
@@ -128,13 +120,6 @@ int main(int argc, char **argv) {
         update_accelerations_of_all_stars(qt->root, g, theta);
         update_positions(g, dt);
         free_quad_tree(qt);
-        //for(int k = 0; k < g->num_bodies; k++) {
-            //printf("\niteration = %d/%d    number elements = %d\n", i, iter, g->num_bodies);
-            //print_vec(&g->stars[k]->pos_t);
-        //print_star((g->stars[1]));
-        //}
-
-        
     }
     gfx_destroy(context);
     free_galaxy(g);

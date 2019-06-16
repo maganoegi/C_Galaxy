@@ -31,21 +31,29 @@ void reset_acceleration(star *s) {
 }
 
 void update_acceleration(star *s, const star *const s2) {
+    /*========================================================================
+        * Updating the acceleration of a star under effect of another star:
+            * multiply both masses
+            * find norm of the distance between both positions
+            * alpha * difference vector
+            * divide by mass star
+    ========================================================================*/
     double mass_product = s->mass * s2->mass;
     double norm_Rij = distance(&(s->pos_t), &(s2->pos_t));
-    vec* Rji = sub_vec(&(s2->pos_t), &(s->pos_t));
+    vec* Rji = sub_vec(&(s->pos_t), &(s2->pos_t));
     double alpha = ((G * mass_product) * pow((norm_Rij + Epsilon), -3.0));
     vec* F_ij = mul_vec(alpha, Rji);
     s->acc = *mul_vec((1.0 / s->mass), F_ij);
 }
 
 void update_position(star *s, double dt) {
+    /*========================================================================
+        * New position is calculated with the following formula:
+            * position = 2 * position - old_position + acceleration * dt^2
+    ========================================================================*/
     vec tmp = s->pos_t;
     s->pos_t = *sub_vec(mul_vec(2.0, &s->pos_t), add_vec(&s->pos_t_dt, mul_vec(dt * dt, &s->acc)));
     s->pos_t_dt = tmp;
-
-    //En pseudo-code cette mise à jour est de la forme:
-    //pos_t = 2*pos_t - pos_t_dt + acc * dt * dt...
 }
 
 void print_star(const star *const s) {
