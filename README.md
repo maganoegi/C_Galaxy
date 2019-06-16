@@ -11,6 +11,7 @@ Since I was under a strict deadline, some things were possibly overlooked, such 
 
 Program parameters (mandatory):
 `./galaxy_simulation <number_of_stars> <theta>`,
+
 where number_of_stars = int, and theta = double.
 
 Proven setup:
