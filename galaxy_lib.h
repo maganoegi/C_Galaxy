@@ -17,10 +17,10 @@
 #include "star_lib.h"
 #include "box_lib.h"
 
-#define time_unit pow(10.0, 30.0)
-#define R pow(10.0, 18.0)
-#define m_solar (1.98892 * pow(10.0, 20.0))
-#define m_min pow(10.0, 20.0)
+#define time_unit 10000000000.0
+#define R 1000000000000000000.0
+#define m_solar 198892000000000000000.0
+#define m_min 100000000000000000000.0
 
 typedef struct __galaxy {
     int num_bodies;

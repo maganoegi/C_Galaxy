@@ -44,6 +44,7 @@ void insert_star(node* n, star* s) {
                     }
 
                     insert_star(n->children[i], n->s);
+
                 }
 
                 for(int i = 0; i < 4; i++) {
@@ -59,7 +60,7 @@ void insert_star(node* n, star* s) {
 
             // Increment Center of mass coordinates
             n->super_s->pos_t_dt = n->super_s->pos_t;
-            n->super_s->pos_t = *add_vec(&n->super_s->pos_t, &s->pos_t);
+            n->super_s->pos_t = *mul_vec((1.0 / n->super_s->mass), mul_vec(s->mass, add_vec(&n->super_s->pos_t, &s->pos_t)));
 
             for(int i = 0; i < 4; i++) {
                 insert_star(n->children[i], s);
@@ -83,7 +84,7 @@ quad_tree *create_quad_tree_from_galaxy(const galaxy *const g) {
     qt->root = top;
 
     // Populate the tree
-    for(int i = 0; i < g->num_bodies; i++) { 
+    for(int i = 1; i < g->num_bodies; i++) {
         insert_star(qt->root, g->stars[i]);
     }
 

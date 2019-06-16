@@ -21,8 +21,6 @@
 
 // Function that allows for random double generation in different minmax ranges:
 double randFrom(double min, double max) {
-
-
     double range = (max - min);
     double div = RAND_MAX / range;
     return min + (rand() / div);
@@ -131,10 +129,13 @@ void resize_galaxy(galaxy *g) {
             }
             //print_star(g->stars[i]);
         }
-        printf("\nBEFORE %d -------------------\n", g->num_bodies);
+
         g->num_bodies = g->num_bodies - q_2_rem;
         g->stars = realloc(g->stars, g->num_bodies * sizeof(star*));
-        printf("\nAFTER %d ---------------------\n", g->num_bodies);
+
+        if(g->num_bodies == 1) {
+            EXIT_SUCCESS;
+        }
 
         for(int i = 0; i < g->num_bodies; i++) {
             if(is_inside(g->b, g->stars[i]->pos_t)) {
@@ -143,7 +144,7 @@ void resize_galaxy(galaxy *g) {
             }     
         }
 
-        //free(tmp);
+        free(tmp);
 }
 
 void test_galaxy_lib() {
