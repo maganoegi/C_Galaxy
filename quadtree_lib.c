@@ -25,6 +25,7 @@ void insert_star(node* n, star* s) {
             if(n->is_empty) {
                 n->is_empty = 0;
                 n->s = s;
+                //n->super_s = s;
             } else {
                 box* kids = divide_in_four(n->b);
                 
@@ -38,6 +39,8 @@ void insert_star(node* n, star* s) {
                     n->children[i]->is_empty = 1;
                     n->children[i]->s = malloc(sizeof(star));
                     n->children[i]->super_s = malloc(sizeof(star));
+                    //vec* zero = new_vec(0.0, 0.0);
+                    //n->children[i]->super_s = new_star_vel(*zero, *zero, *zero, 0.0, 0.0);
 
                     for(int j = 0; j < 4; j++) {
                         n->children[i]->children[j] = NULL;

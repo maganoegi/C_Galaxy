@@ -46,9 +46,6 @@ galaxy *create_and_init_galaxy(int num_bodies, box b, double dt) {
         vec* r_i_prototype = new_vec(0.5 - randFrom(0.0, 1.0), 0.5 - randFrom(0.0, 1.0));
         double alpha = R * (log10(1.0 - randFrom(0.0, 1.0))) / 1.8;
         vec* r_i = mul_vec(alpha, r_i_prototype);
-        //print_vec(r_i_prototype);
-        //printf("alpha = %g\n", alpha);
-        //print_vec(r_i);
 
         free(r_i_prototype);
 
@@ -77,14 +74,6 @@ galaxy *create_and_init_galaxy(int num_bodies, box b, double dt) {
     return g;
 }
 
-// m_i = m_min + m_i'     m_i' = random(10.0) * m_solar
-// r_i = R * ( (log(1 - random(1.0)) / 1.8) ) (0.5 - random(1.0)x, 0.5 - random(1.0 y))
-// R = pow(10,18)
-// m_0 = pow(10, 6) * m_solar, position = (0, 0), speed = (0, 0)
-// Other stars have initial speed of:
-// v_i = sqrt( (G(m_i + m_0)) / ||r_i|| ) * (-sin(phi), cos(phi))
-// phi = atan2(r_iy / r_ix)
-
 void reset_accelerations(galaxy* g) {
     vec* zero_vec = new_vec(0.0, 0.0);
     for(int i = 0; i < g->num_bodies; i++) {
@@ -92,6 +81,7 @@ void reset_accelerations(galaxy* g) {
             g->stars[i]->acc = *zero_vec;
         }
     }
+
     free(zero_vec);
 }
 
@@ -125,9 +115,7 @@ void resize_galaxy(galaxy *g) {
                 q_2_rem++;
             } else {
                 tmp[i] = g->stars[i];
-                //print_star(g->stars[i]);
             }
-            //print_star(g->stars[i]);
         }
 
         g->num_bodies = g->num_bodies - q_2_rem;
@@ -144,7 +132,7 @@ void resize_galaxy(galaxy *g) {
             }     
         }
 
-        free(tmp);
+        //free(tmp);
 }
 
 void test_galaxy_lib() {

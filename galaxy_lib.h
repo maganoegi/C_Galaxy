@@ -17,7 +17,7 @@
 #include "star_lib.h"
 #include "box_lib.h"
 
-#define time_unit 10000000000.0
+#define time_unit 1000000000000000.0
 #define R 1000000000000000000.0
 #define m_solar 198892000000000000000.0
 #define m_min 100000000000000000000.0

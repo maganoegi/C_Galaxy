@@ -81,7 +81,7 @@ double compute_length(box b) {
 }
 
 void print_box(box b) {
-    printf("\nBox x0 = %g, x1 = %g, y0 = %g, y1 = %g\n", b.x0, b.x1, b.y0, b.y1);
+    printf("\nBox x0 = %f, x1 = %f, y0 = %f, y1 = %f\n", b.x0, b.x1, b.y0, b.y1);
 }
 
 
