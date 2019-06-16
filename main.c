@@ -76,7 +76,7 @@ void show_pixels(galaxy* g, struct gfx_context_t* context, double scale, int scr
     }
 
     gfx_present(context);
-    sleep(0.0000001);
+    sleep(0.00001);
 }
 
 int main(int argc, char **argv) {
@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
     srand(time(NULL)); // seed for rng
 
     int iter = 1000000; // number of temporal iterations
-    double scale = 10000000000000000005.0; // 17
+    double scale = 1000000000000000005.0; // 17
     box domain = new_box(
             -1.0 * scale, // x0
             1.0 * scale,  // x1

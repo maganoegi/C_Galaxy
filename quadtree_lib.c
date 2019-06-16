@@ -58,12 +58,12 @@ void insert_star(node* n, star* s) {
             }
         } else {
             // Increment super star mass
-            //printf("\nBEFORE supermass = %g, mass = %g\n", n->super_s->mass, s->mass);
             n->super_s->mass += s->mass;
 
             // Increment Center of mass coordinates
             n->super_s->pos_t_dt = n->super_s->pos_t;
             n->super_s->pos_t = *mul_vec((1.0 / n->super_s->mass), mul_vec(s->mass, add_vec(&n->super_s->pos_t, &s->pos_t)));
+
 
             for(int i = 0; i < 4; i++) {
                 insert_star(n->children[i], s);
